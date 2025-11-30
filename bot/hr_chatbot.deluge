@@ -1,0 +1,63 @@
+// HR Chatbot for Zoho SalesIQ - Main Bot Script
+// Features: Conversational follow-ups, job applications, end-of-conversation detection
+
+end_phrases = map();
+end_phrases.put("stop", true);
+end_phrases.put("bye", true);
+end_phrases.put("exit", true);
+end_phrases.put("that's all", true);
+
+function onMessage(userMessage, session, visitor) {
+  normalized = userMessage.toLowerCase().trim();
+  if (!session.contains("followup_enabled")) {
+    session.put("followup_enabled", true);
+  }
+  if (isEndOfConversation(normalized)) {
+    session.put("followup_enabled", false);
+    return "Thanks for chatting! Have a great day!";
+  }
+  if (!session.contains("turn")) {
+    session.put("turn", 0);
+  }
+  session.put("turn", session.get("turn") + 1);
+  intent = detectIntent(userMessage);
+  main = processIntent(intent, userMessage);
+  if (!session.get("followup_enabled")) {
+    return main;
+  }
+  followup = generateFollowup(intent, session.get("turn"));
+  return main + "\n\n" + followup;
+}
+
+function detectIntent(msg) {
+  m = msg.toLowerCase();
+  if (m.contains("apply") || m.contains("job")) return "apply";
+  if (m.contains("find") || m.contains("search")) return "find";
+  if (m.contains("my") || m.contains("status")) return "mystatus";
+  if (m.contains("hi") || m.contains("hello")) return "greeting";
+  return "general";
+}
+
+function processIntent(intent, msg) {
+  if (intent == "greeting") return "Hi! How can I help with your job search?";
+  if (intent == "apply") return "Great! Which job position interests you?";
+  if (intent == "find") return "Let's find the right job for you. What are your skills?";
+  if (intent == "mystatus") return "What's your email to check your applications?";
+  return "How else can I assist you?";
+}
+
+function generateFollowup(intent, turn) {
+  if (intent == "greeting") return "Would you like to apply for a job or search for positions?";
+  if (intent == "apply") return "I'll show you matching positions in our system.";
+  if (intent == "find") return "Based on your skills, I'll find perfect matches.";
+  if (intent == "mystatus") return "I'll retrieve your application status.";
+  if (turn < 3) return "Is there anything else I can help?";
+  return "Need more assistance or should we wrap up?";
+}
+
+function isEndOfConversation(input) {
+  for each (phrase in end_phrases) {
+    if (input.contains(phrase)) return true;
+  }
+  return false;
+}
