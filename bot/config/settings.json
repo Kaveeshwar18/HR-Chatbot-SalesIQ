@@ -1,0 +1,42 @@
+{
+  "botName": "HR Chatbot for Zoho SalesIQ",
+  "version": "1.0.0",
+  "platform": "Zoho SalesIQ",
+  "language": "Deluge",
+  "features": [
+    "conversational_followups",
+    "job_applications",
+    "job_search",
+    "application_tracking",
+    "otp_verification",
+    "end_of_conversation_detection"
+  ],
+  "followupSettings": {
+    "enabled": true,
+    "maxContextTurns": 10,
+    "contextAwareness": true
+  },
+  "endPhrases": [
+    "stop",
+    "bye",
+    "exit",
+    "that's all",
+    "nothing else",
+    "no thanks",
+    "goodbye",
+    "end chat"
+  ],
+  "intents": {
+    "greeting": "Initial greeting and bot introduction",
+    "apply_job": "User wants to apply for a job",
+    "find_job": "User wants to search/find jobs",
+    "my_jobs": "User wants to check application status",
+    "otp_verification": "OTP verification for phone number",
+    "help": "User needs help/guidance"
+  },
+  "responseSettings": {
+    "maxResponseLength": 500,
+    "includeFollowups": true,
+    "followupDelay": 0
+  }
+}
